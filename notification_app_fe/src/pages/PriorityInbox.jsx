@@ -1,5 +1,4 @@
 import {
-  useEffect,
   useState
 } from "react";
 
@@ -13,42 +12,23 @@ import {
 import NotificationCard
 from "../components/NotificationCard";
 
-import { fetchNotifications }
-from "../api/notificationService";
+import mockNotifications
+from "../data/mockNotifications";
 
-import { getTopNotifications }
-from "../utils/priorityUtils";
+import {
+  getTopNotifications
+} from "../utils/priorityUtils";
 
 function PriorityInbox() {
-
-  const [notifications,
-    setNotifications]
-      = useState([]);
 
   const [topN, setTopN]
     = useState(10);
 
-  useEffect(() => {
-
-    loadNotifications();
-
-  }, [topN]);
-
-  async function loadNotifications() {
-
-    const data =
-      await fetchNotifications();
-
-    const topNotifications =
-      getTopNotifications(
-        data,
-        topN
-      );
-
-    setNotifications(
-      topNotifications
+  const topNotifications =
+    getTopNotifications(
+      mockNotifications,
+      topN
     );
-  }
 
   return (
 
@@ -83,7 +63,8 @@ function PriorityInbox() {
 
       </Select>
 
-      {notifications.map((notification) => (
+      {topNotifications.map(
+        (notification) => (
 
         <NotificationCard
           key={notification.id}

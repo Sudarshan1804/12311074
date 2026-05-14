@@ -11,18 +11,17 @@ import {
   Button
 } from "@mui/material";
 
-import NotificationCard from "../components/NotificationCard";
+import NotificationCard
+from "../components/NotificationCard";
 
-import { fetchNotifications }
-from "../api/notificationService";
-
-import { Log }
-from "../middleware/logger";
+import mockNotifications
+from "../data/mockNotifications";
 
 function AllNotifications() {
 
-  const [notifications, setNotifications]
-    = useState([]);
+  const [notifications,
+    setNotifications]
+      = useState([]);
 
   const [page, setPage]
     = useState(1);
@@ -39,35 +38,21 @@ function AllNotifications() {
 
   }, [page, filter]);
 
-  async function loadNotifications() {
+  function loadNotifications() {
 
-    try {
+    let filtered =
+      [...mockNotifications];
 
-      const data =
-        await fetchNotifications(
-          page,
-          10,
-          filter
+    if (filter) {
+
+      filtered =
+        filtered.filter(
+          (item) =>
+            item.type === filter
         );
-
-      setNotifications(data);
-
-      await Log(
-        "frontend",
-        "info",
-        "page",
-        "Notifications loaded"
-      );
-
-    } catch (error) {
-
-      await Log(
-        "frontend",
-        "error",
-        "page",
-        "Failed loading notifications"
-      );
     }
+
+    setNotifications(filtered);
   }
 
   function markAsViewed(id) {
@@ -121,7 +106,9 @@ function AllNotifications() {
 
       </Select>
 
-      {notifications.map((notification) => (
+      {notifications.map(
+        (notification) => (
+
         <NotificationCard
           key={notification.id}
           notification={notification}
@@ -134,16 +121,31 @@ function AllNotifications() {
             )
           }
         />
+
       ))}
 
-      <Button variant="contained" onClick={() =>setPage(page - 1)} disabled={page === 1}sx={{ marginRight: 2 }}>
+      <Button
+        variant="contained"
+        onClick={() =>
+          setPage(page - 1)
+        }
+        disabled={page === 1}
+        sx={{ marginRight: 2 }}
+      >
         Previous
       </Button>
 
-      <Button variant="contained" onClick={() =>setPage(page + 1)}>
+      <Button
+        variant="contained"
+        onClick={() =>
+          setPage(page + 1)
+        }
+      >
         Next
       </Button>
+
     </Container>
   );
 }
+
 export default AllNotifications;
